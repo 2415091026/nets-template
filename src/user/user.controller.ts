@@ -6,29 +6,28 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { Public } from 'src/public/public.decorator';
 @ApiTags('用户管理')
-@Controller('user')
+@Controller()
 export class UserController {
   constructor(private readonly userService: UserService) {}
-
-  @Post()
+  @ApiOperation({ summary: '注册新用户' })
+  @Public()
+  @Post('regist')
   create(@Body() createUserDto: CreateUserDto) {
     return this.userService.create(createUserDto);
   }
-
+  @ApiOperation({ summary: '根据用户名查询用户' })
+  @Public()
   @Get()
-  findAll() {
-    return this.userService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.userService.findOne(+id);
+  findOne(@Query('username') username: string) {
+    return this.userService.findOne(username);
   }
 
   @Patch(':id')
